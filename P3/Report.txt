@@ -1,0 +1,306 @@
+********** Report of Practical 2 **********
+
+--  This practical consists of the implementation in C language of six different
+configurations of hash tables that work as data dictionaries, storing items in
+such a way that the complexity of looking for information inside the table grows
+really slow when compared to other data structures.
+
+The six combinations are the result of having three different collision
+resolution methods (Linear, Quadratic and Double hashing)
+and two possible hash functions.
+
+
+
+
+-- The computer used for the measurements has the following specifications:
+    - Model: Lenovo ideapad 100s 14ibr
+    - OS: Ubuntu Mate 18.04
+    - Processor: Intel Celeron CPU N3060 @1.60GHz x2
+    - Memory: 4 GB of DDR3L RAM
+
+--   The execution times are measured in microseconds (t(n)).
+
+
+---------------------------------CHECK-------------------------------------
+***LINEAR CLOSED TABLE
+0- (JO: none)
+1-
+2-
+3-
+4-
+5-
+6- (WILLIAM: none)
+7- (ANNE: none)
+8- (JOHN: none)
+9- (LOUISE: none)
+10- (ROSE: none)
+Total number of collisions inserting elements: 12
+
+When looking for: ANNE, I find: ANNE, collisions: 0
+When looking for: WILLIAM, I find: WILLIAM, collisions: 0
+When looking for: JOHN, I find: JOHN, collisions: 1
+When looking for: LOUISE, I find: LOUISE, collisions: 2
+When looking for: ROSE, I find: ROSE, collisions: 4
+When looking for: JO, I find: JO, collisions: 5
+
+
+
+***QUADRATIC CLOSED TABLE
+0- (LOUISE: none)
+1-
+2-
+3-
+4- (JO: none)
+5-
+6- (WILLIAM: none)
+7- (ANNE: none)
+8- (JOHN: none)
+9-
+10- (ROSE: none)
+Total number of collisions inserting elements: 8
+
+When looking for: ANNE, I find: ANNE, collisions: 0
+When looking for: WILLIAM, I find: WILLIAM, collisions: 0
+When looking for: JOHN, I find: JOHN, collisions: 1
+When looking for: LOUISE, I find: LOUISE, collisions: 2
+When looking for: ROSE, I find: ROSE, collisions: 2
+When looking for: JO, I find: JO, collisions: 3
+
+
+
+***DOUBLE HASHING CLOSED TABLE
+0-
+1- (JO: none)
+2-
+3-
+4-
+5-
+6- (WILLIAM: none)
+7- (ANNE: none)
+8- (JOHN: none)
+9- (LOUISE: none)
+10- (ROSE: none)
+Total number of collisions inserting elements: 8
+
+When looking for: ANNE, I find: ANNE, collisions: 0
+When looking for: WILLIAM, I find: WILLIAM, collisions: 0
+When looking for: JOHN, I find: JOHN, collisions: 1
+When looking for: LOUISE, I find: LOUISE, collisions: 2
+When looking for: ROSE, I find: ROSE, collisions: 2
+When looking for: JO, I find: JO, collisions: 3
+Total collisions inserting with Linear Hashing A: 172623183
+Total collisions inserting with Quadratic Hashing A: 2106581
+Total collisions inserting with Double Hashing A: 1451531
+Total collisions inserting with Linear Hashing B: 16965
+Total collisions inserting with Quadratic Hashing B: 13366
+Total collisions inserting with Double Hashing B: 19401
+
+
+
+*Notes: The times measured with loops are indicated by * and each loop has 100 iterations.
+-------------------------------------TABLES------------------------------------
+
+We propose f(n)=log(n) as an understimated bound,
+  g(n)=n as a tight bound and
+  h(n)=n*log(n) as an overestimated bound.
+
+***Linear hashing with hash function A
+Inserting 19062 elements... Total number of collisions: 172623183
+Finding n elements...
+
+           n            t(n)      t(n)/f(n)      t(n)/g(n)      t(n)/h(n)
+         125   160313.00000   33202.6891214   1282.5040000    265.6215130
+
+         250   343961.00000   62295.2883515   1375.8440000    249.1811534
+
+         500   649523.00000  104515.5204823   1299.0460000    209.0310410
+
+        1000  1288911.00000  186588.9783215   1288.9110000    186.5889783
+
+        2000  2541791.00000  334406.4752218   1270.8955000    167.2032376
+
+        4000  5190615.00000  625823.9611809   1297.6537500    156.4559903
+
+        8000 10169319.00000 1131534.0258956   1271.1648750    141.4417532
+
+       16000 20474289.00000 2115037.3372491   1279.6430625    132.1898336
+      ------------------------------------------------------------------------
+                            underestimated       tight        overestimated
+      ------------------------------------------------------------------------
+                                            CONST = (1270,1300)
+
+-> The second value for t(n)/g(n) is an anomalous measurement.
+
+As n approaches infinity:
+- t(n)/f(n) tends to infinity
+- t(n)/g(n) tends to a constant near CONST = (1270, 1300)
+- t(n)/h(n) tends to 0
+
+
+
+
+***Linear hashing with hash function B
+Inserting 19062 elements... Total number of collisions: 16965
+Finding n elements...
+
+           n            t(n)      t(n)/f(n)      t(n)/g(n)      t(n)/h(n)
+         125       83.03000*     17.1964799      0.6642400      0.1375718
+
+         250      169.53000*     30.7038305      0.6781200      0.1228153
+
+         500      366.27000*     58.9369425      0.7325400      0.1178739
+
+        1000      727.00000     105.2440294      0.7270000      0.1052440
+
+        2000     1322.00000     173.9267155      0.6610000      0.0869634
+
+        4000     2679.00000     323.0026484      0.6697500      0.0807507
+
+        8000     5271.00000     586.5010086      0.6588750      0.0733126
+
+       16000    10841.00000    1119.8982184      0.6775625      0.0699936
+       ------------------------------------------------------------------------
+                             underestimated       tight        overestimated
+       ------------------------------------------------------------------------
+                                             CONST = (0.66,0.68)
+-> The third and fourth value for t(n)/g(n) are anomalous measurements.
+(The third probably because the time was measured with a loop).
+
+As n approaches infinity:
+- t(n)/f(n) tends to infinity
+- t(n)/g(n) tends to a constant near CONST = (0.66, 0.68)
+- t(n)/h(n) tends to 0
+
+***Quadratic hashing with hash function A
+Inserting 19062 elements... Total number of collisions: 2106581
+Finding n elements...
+           n            t(n)      t(n)/f(n)      t(n)/g(n)      t(n)/h(n)
+         125     2551.00000     528.3418060     20.4080000      4.2267344
+
+         250     4465.00000     808.6627917     17.8600000      3.2346512
+
+         500    21159.00000    3404.7199220     42.3180000      6.8094398
+
+        1000    18665.00000    2702.0355016     18.6650000      2.7020355
+
+        2000    37464.00000    4928.8884050     18.7320000      2.4644442
+
+        4000    70225.00000    8466.9133954     17.5562500      2.1167283
+
+        8000   153375.00000   17065.9442605     19.1718750      2.1332430
+
+       16000   300228.00000   31014.1870952     18.7642500      1.9383867
+       ------------------------------------------------------------------------
+                             underestimated       tight        overestimated
+       ------------------------------------------------------------------------
+                                             CONST = (17.5,20.0)
+-> The third value for all the table is an anomalous measurement.
+
+
+As n approaches infinity:
+- t(n)/f(n) tends to infinity
+- t(n)/g(n) tends to a constant near CONST=(17.5, 20.0)
+- t(n)/h(n) tends to 0
+
+***Quadratic hashing with hash function B
+Inserting 19062 elements... Total number of collisions: 13366
+Finding n elements...
+           n            t(n)      t(n)/f(n)      t(n)/g(n)      t(n)/h(n)
+         125       83.13000*     17.2171910      0.6650400      0.1377375
+
+         250      164.90000*     29.8652843      0.6596000      0.1194611
+
+         500      368.25000*     59.2555466      0.7365000      0.1185111
+
+        1000      676.00000      97.8610233      0.6760000      0.0978610
+
+        2000     1360.00000     178.9261219      0.6800000      0.0894631
+
+        4000     2649.00000     319.3855975      0.6622500      0.0798464
+
+        8000     5341.00000     594.2898666      0.6676250      0.0742862
+
+       16000    11104.00000    1147.0666743      0.6940000      0.0716917
+       ------------------------------------------------------------------------
+                             underestimated       tight        overestimated
+       ------------------------------------------------------------------------
+                                             CONST = (0.66,0.69)
+-> The third and fourth value for t(n)/g(n) are anomalous measurements.
+(The third probably because the time was measured with a loop).
+
+As n approaches infinity:
+- t(n)/f(n) tends to infinity
+- t(n)/g(n) tends to a constant near CONST=(0.66, 0.69)
+- t(n)/h(n) tends to 0
+
+***Double hashing with hash function A
+Inserting 19062 elements... Total number of collisions: 1451531
+Finding n elements...
+           n            t(n)      t(n)/f(n)      t(n)/g(n)      t(n)/h(n)
+         125     1164.00000     241.0779546      9.3120000      1.9286236
+
+         250     2176.00000     394.0985968      8.7040000      1.5763944
+
+         500     5006.00000     805.5214296     10.0120000      1.6110429
+
+        1000     9954.00000    1440.9890910      9.9540000      1.4409891
+
+        2000    19822.00000    2607.8482266      9.9110000      1.3039241
+
+        4000    46298.00000    5582.0741386     11.5745000      1.3955185
+
+        8000    80437.00000    8950.1767464     10.0546250      1.1187721
+
+        
+       16000   162395.00000   16775.7468102     10.1496875      1.0484842
+       ------------------------------------------------------------------------
+                             underestimated       tight        overestimated
+       ------------------------------------------------------------------------
+                                             CONST = (9,10)
+-> The sixth value for t(n)/g(n) and t(n)/h(n) is an anomalous measurement.
+As n approaches infinity:
+- t(n)/f(n) tends to infinity
+- t(n)/g(n) tends to a constant near CONST=(9, 10)
+- t(n)/h(n) tends to 0
+
+***Double hashing with hash function B
+Inserting 19062 elements... Total number of collisions: 19401
+Finding n elements...
+           n            t(n)      t(n)/f(n)      t(n)/g(n)      t(n)/h(n)
+         125       84.36000*     17.4719384      0.6748800      0.1397755
+
+         250      173.12000*     31.3540207      0.6924800      0.1254161
+
+         500      351.47000*     56.5554568      0.7029400      0.1131109
+
+        1000      672.00000      97.2819639      0.6720000      0.0972820
+
+        2000     1374.00000     180.7680084      0.6870000      0.0903840
+
+        4000     2652.00000     319.7473026      0.6630000      0.0799368
+
+        8000     5456.00000     607.0858477      0.6820000      0.0758857
+
+       16000    11312.00000    1168.5535141      0.7070000      0.0730346
+       ------------------------------------------------------------------------
+                              underestimated      tight        overestimated
+       ------------------------------------------------------------------------
+                                             CONST = (0.67, 0.70)
+-> There is no anomalous measurements.
+
+As n approaches infinity:
+- t(n)/f(n) tends to infinity
+- t(n)/g(n) tends to a constant near CONST=(0.67, 0.70)
+- t(n)/h(n) tends to 0
+
+****************************** CONCLUSIONS *****************************
+We obtain O(n) as a for all the configurations because the hash table is implemented
+in such a way that, when performing a find operation, the number of position calculations
+for the next candidate block in the array increases with the number of collisions, and
+the bigger the number of find operations the bigger the number of collisions.
+
+Linear hashing with hash A is the one with the biggest amount of collisions, so, is
+the one with the greatest maximum time.
+Quadratic hashing with the hash B function has the smallest amount of collisions and,
+therefore, the fastest times from all the six configurations.
+

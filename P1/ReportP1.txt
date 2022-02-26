@@ -1,0 +1,201 @@
+                                                        ********** Report of Practical 1 **********
+
+
+--   This practical consists of the implementation in C language of three different algorithms that, given an integer parameter n, compute the n'th element of the Fibonacci sequence.
+Then, the execution times for each algorithm are measured and analysed.
+
+These are the given algorithms:
+
+Fibonacci 1 (recursive)
+-----------------------
+function fib1 (n);
+      if n<2 then return n
+      else return fib1(n-1) + fib1(n-2)
+      end if if
+end function
+
+
+Fibonacci 2 (iterative)
+-----------------------
+function fib2 (n);
+      i := 1; j := 0;
+      for k := 1 to n do n
+          j := i + j; i := j - i
+      end for;
+      return j
+end function
+
+
+Fibonacci 3 (iterative)
+-----------------------
+function fib3 (n);
+   i := 1; j := 0; k := 0; h := 1; t := 0
+   while n>0 do
+      if n is odd then
+         t := j*h;
+         j := i*h + j*k + t;
+         i := i*k + t
+      end if;
+      t := h*h;
+      h := 2*k*h + t;
+      k := k*k + t;
+      n := n div 2
+   end while;
+   return j
+end function
+
+--   The first algorithm, Fibonacci 1, is recursive, and the second and third ones are iterative. This will result in a great difference between the algorithms in both efficiency and practical limitations.
+
+-- The computer used for the measurements has the following specifications:
+    - Model: Lenovo ideapad 100s 14ibr
+    - OS: Ubuntu Mate 18.04
+    - Processor: Intel Celeron CPU N3060 @1.60GHz x2
+    - Memory: 4 GB of DDR3L RAM
+
+--   In order to facilitate the choice of a stable table, we run the measurement five times for each algorithm and display all the results.
+
+--   The execution times are measured in microseconds (t(n)).
+
+
+*************************************************************** FIBONACCI SEQUENCE ******************************************************************************
+
+
+**** Implementation ****
+
+*Done by passing from pseudocode to C
+
+
+
+
+
+
+**** Obtained results ****
+
+-> Table 1 of Fibonacci 1:
+
+        n         t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+      ----------------------------------------------------------------------------------
+        2       0.09100*             0.0752066           0.0347589           0.0227500
+      ----------------------------------------------------------------------------------
+        4       0.30300*             0.2069531           0.0442071           0.0189375
+      ----------------------------------------------------------------------------------
+        8       2.36600*             1.1037565           0.0503632           0.0092422
+      ----------------------------------------------------------------------------------
+       16      22.43100*             4.8816391           0.0101636           0.0003423
+      ----------------------------------------------------------------------------------
+       32   48871.00000           2314.6498416           0.0100334           0.0000114
+      ----------------------------------------------------------------------------------
+                                 underestimated            tight           overestimated
+      ----------------------------------------------------------------------------------
+                                                        CONST=0.0100
+                                                       --------------
+*Notes: The times measured with loops are indicated by * and each loop has 1000 iterations.
+-> There were no anomalous measurements.
+
+For Fibonacci 1 we propose:
+    - f(n) = 1.1^n as the underestimated bound.
+    - g(n) = ((1+5^0.5)/2)^n as the tight bound.
+    - h(n) = 2^n as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to a constant near C = 0.0100
+    - t(n)/h(n) tends to 0
+
+So O(n) = t(n)/g(n) = ((1+5^0.5)/2)^n for Fibonacci 1.
+
+
+
+
+
+
+-> Table 1 of Fibonacci 2:
+
+        n         t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+ ----------------------------------------------------------------------------------------
+      1000      4.96100*             0.0197501           0.0049610           0.0007182
+ ----------------------------------------------------------------------------------------
+     10000     48.61400*             0.0306734           0.0048614           0.0005278
+ ----------------------------------------------------------------------------------------
+    100000    488.31300*             0.0488313           0.0048831           0.0004241
+ ----------------------------------------------------------------------------------------
+   1000000   4898.00000              0.0776281           0.0048980           0.0003545
+ ----------------------------------------------------------------------------------------
+  10000000  48768.00000              0.1224997           0.0048768           0.0003026
+ ----------------------------------------------------------------------------------------
+                                   underestimated          tight           overestimated
+ ----------------------------------------------------------------------------------------
+                                                        CONST=0.0487
+                                                       --------------
+*Notes: The times measured with loops are indicated by * and each loop has  1000 iterations.
+-> There were no anomalous measurements.
+
+For Fibonacci 2 we propose:
+    - f(n) = n^0.8 as the underestimated bound.
+    - g(n) = n as the tight bound.
+    - h(n) = n*log(n) as the underestimated bound.
+As n approaches infinity
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to a constant X inside the estimated interval (0.00486, 0.00488)
+    - t(n)/h(n) tends to 0
+
+So O(n) = t(n)/g(n) = n for Fibonacci 2.
+
+
+
+
+
+
+
+
+-> Table 1 of Fibonacci 3:
+
+        n         t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+ ----------------------------------------------------------------------------------------
+      1000      0.11600*             0.044136             0.016793           0.0036682
+ ----------------------------------------------------------------------------------------
+     10000      0.14600*             0.048108             0.015852           0.0014600
+ ----------------------------------------------------------------------------------------
+    100000      0.17300*             0.050986             0.015027           0.0005471
+ ----------------------------------------------------------------------------------------
+   1000000      0.22400*             0.060265             0.016214           0.0002240
+ ----------------------------------------------------------------------------------------
+  10000000      0.26500*             0.066007             0.016441           0.0000838
+ ----------------------------------------------------------------------------------------
+                                  underestimated           tight           overestimated
+ ----------------------------------------------------------------------------------------
+                                                        CONST=0.0164
+                                                       --------------
+*Notes: The times measured with loops are indicated by * and each loop has  1000 iterations.
+-> There were no anomalous measurements.
+
+For Fibonacci 3 we propose:
+    - f(n) = log(n)^0.5 as the underestimated bound.
+    - g(n) = log(n) as the tight bound.
+    - h(n) = n^0.5 as the underestimated bound.
+As n approaches infinity
+	- t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to a constant X inside the estimated interval (0.0162, 0.0164)
+    - t(n)/h(n) tends to 0
+
+So O(n) = t(n)/g(n) = log(n) for Fibonacci 3.
+
+
+
+
+                       ************************************************* Conclusions **************************************************
+
+  These measurements and and information processing help us determine several things about said algorithms:
+
+--   The recursive implementation of Fibonacci 1 causes the algorithm to have a very slow execution with respect to Fibonacci 2 and Fibonacci 3. In addition, this also makes it difficult to compute high figures of n because its growth is exponential(its O(n)).
+
+--   The iterative implementation of Fibonacci 2 makes it computationally faster than Fibonacci 2 since it has a linear O(n) (as we can see in the measurements obtained).
+
+--   Finally, the iterative implementation of Fibonacci 3 is the most efficient one. Not only because the time values obtained (all of them had to be estimated with an arithmetic mean) for n = 1000 are similar to those obtained in Fibonacci 1 for n = 2, but, most importantly, because its O(n) is logarithmic (the type of function with the slowest growth).
+
+
+
+
+
+
+(************ Authors: Daniel Quintillán (daniel.quintillan), Emanuele Meroni (emanuele.meroni) and Hilda Romero (h.rvelo) ************)

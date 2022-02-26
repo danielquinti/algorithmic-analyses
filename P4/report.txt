@@ -1,0 +1,155 @@
+REPORT - PRACTICAL 2
+EMPIRICAL VERIFICATION OF COMPLEXITY:
+HEAPSORT.
+By 
+Daniel Quintillán Quintillán and Iván García Fernández
+
+-- Introduction --
+In this report we will evaluate both the performance from the procedure 
+that creates a max heap and that from the heapsort algorithm when sorting
+an array that has been previously initialized in ascending, descending and 
+random configuration.
+We will be measuring in microseconds the time it takes to order the array
+and then comparing it with what would be expected from the theoretical
+analysis of the sorting algorithm's time complexity.
+
+In order to facilitate the execution, a makefile is included.
+The command make will generate and execute four binary files:
+- make e1: which checks the proper functioning of the maxheap.
+- make e2: which calculates the complexity of the maxheap creation.
+- make e3: which checks the proper functioning of heapsort.
+- make e4: which calculates the complexity of the heapsort algorithm.
+
+For your convenience, and to facilitate evaluation, there is a make run
+command that runs all exercises.
+
+***************************************************************************
+********REGARDING THE COMPLEXITY ANALYSIS FROM EXERCISES 2 AND 4***********
+***************************************************************************
+
+The computer used for the measurements has the following specifications:
+- Model: Lenovo ideapad 100s 14ibr
+- OS: Ubuntu Mate 18.04
+- Processor: Intel Celeron CPU N3060 @1.60GHz x2
+- Memory: 4 GB of DDR3L RAM
+
+Note that in any case where the l box is ticked, the execution of the
+algorithm would takes less than 500 microseconds, rendering time
+calculations inaccurate. In such cases, l is indicated and a loop of 1000 
+iterations is performed, such that the average time of those iterations
+is considered as the final measurement.
+
+A loop of five iterations is also needed for obtaining less anomalous 
+measurements when calculating complexities, since at the beginning of the 
+execution the CPU is partially idle.
+
+The following table is obtained for the heap creation:
+
+ +-------------------------------------------------------------+
+ |                           Heap Creation                     |
+ +-------------------------------------------------------------+
+ |                  f(n)=n^0.8; g(n)=n; h(n)=n^1.2             |
+ +--------+------------+---+-----------+-----------+-----------+
+ |    n   |       t(n) | l | t(n)/f(n) | t(n)/g(n) | t(n)/h(n) |
+ +--------+------------+---+-----------+-----------+-----------+
+ |    100 |        5.5 | * |   0.13727 |   0.05465 |   0.02176 |
+ |    200 |       11.0 | * |   0.15838 |   0.05489 |   0.01902 |
+ |    400 |       21.9 | * |   0.18152 |   0.05477 |   0.01652 |
+ |    800 |       43.2 | * |   0.20555 |   0.05399 |   0.01418 |
+ |   1600 |       86.0 | * |   0.23518 |   0.05378 |   0.01230 |
+ |   3200 |      172.0 | * |   0.27010 |   0.05376 |   0.01070 |
+ |   6400 |      344.3 | * |   0.31042 |   0.05379 |   0.00932 |
+ |  12800 |      693.0 |   |   0.35889 |   0.05414 |   0.00817 |
+ |  25600 |     1385.0 |   |   0.41196 |   0.05410 |   0.00710 |
+ |  51200 |     2782.0 |   |   0.47527 |   0.05434 |   0.00621 |
+ | 102400 |     5577.0 |   |   0.54722 |   0.05446 |   0.00542 |
+ +--------+------------+---+-----------+-----------+-----------+
+ |                         | Underest. | Tight     | Overest.  |
+ +-------------------------+-----------+-----------+-----------+
+
+ And these three for the heapsort algorithm with ascending,
+ descending and random array initialization:
+
+ Note: the results measured with the loop are slightly higher 
+ than the ones with a time that was originally higher than 500 
+ microseconds. This can be considered an anomalous measurement.
+
+ +-------------------------------------------------------------+
+ |              Heapsort - ascending initialization            |
+ +-------------------------------------------------------------+
+ |   f(n)=(n^0.8)*log(n); g(n)=n*log(n); h(n)=(n^1.2)*log(n)   |
+ +--------+------------+---+-----------+-----------+-----------+
+ |   n    |       t(n) | l | t(n)/f(n) | t(n)/g(n) | t(n)/h(n) |
+ +--------+------------+---+-----------+-----------+-----------+
+ |    100 |       27.6 | * |   0.15066 |   0.05998 |   0.02388 |
+ |    200 |       61.6 | * |   0.16774 |   0.05813 |   0.02015 |
+ |    400 |      136.6 | * |   0.18887 |   0.05698 |   0.01719 |
+ |    800 |      300.4 | * |   0.21384 |   0.05617 |   0.01475 |
+ |   1600 |      654.0 |   |   0.24230 |   0.05540 |   0.01267 |
+ |   3200 |     1444.0 |   |   0.28088 |   0.05591 |   0.01113 |
+ |   6400 |     3099.0 |   |   0.31884 |   0.05525 |   0.00957 |
+ |  12800 |     6654.0 |   |   0.36438 |   0.05497 |   0.00829 |
+ +--------+------------+---+-----------+-----------+-----------+
+ |                         | Underest. | Tight     | Overest.  |
+ +-------------------------+-----------+-----------+-----------+
+
+ +-------------------------------------------------------------+
+ |              Heapsort - descending initialization           |
+ +-------------------------------------------------------------+
+ |   f(n)=(n^0.8)*log(n); g(n)=n*log(n); h(n)=(n^1.2)*log(n)   |
+ +--------+------------+---+-----------+-----------+-----------+
+ |   n    |       t(n) | l | t(n)/f(n) | t(n)/g(n) | t(n)/h(n) |
+ +--------+------------+---+-----------+-----------+-----------+
+ |    100 |       27.5 | * |   0.14977 |   0.05963 |   0.02374 |
+ |    200 |       61.6 | * |   0.16763 |   0.05809 |   0.02013 |
+ |    400 |      136.4 | * |   0.18867 |   0.05692 |   0.01717 |
+ |    800 |      300.3 | * |   0.21382 |   0.05616 |   0.01475 |
+ |   1600 |      593.0 |   |   0.21970 |   0.05024 |   0.01149 |
+ |   3200 |     1296.0 |   |   0.25209 |   0.05018 |   0.00999 |
+ |   6400 |     2829.0 |   |   0.29106 |   0.05044 |   0.00874 |
+ |  12800 |     6100.0 |   |   0.33404 |   0.05039 |   0.00760 |
+ +--------+------------+---+-----------+-----------+-----------+
+ |                         | Underest. | Tight     | Overest.  |
+ +-------------------------+-----------+-----------+-----------+
+
+ +-------------------------------------------------------------+
+ |              Heapsort - random initialization               |
+ +-------------------------------------------------------------+
+ |   f(n)=(n^0.8)*log(n); g(n)=n*log(n); h(n)=(n^1.2)*log(n)   |
+ +--------+------------+---+-----------+-----------+-----------+
+ |   n    |       t(n) | l | t(n)/f(n) | t(n)/g(n) | t(n)/h(n) |
+ +--------+------------+---+-----------+-----------+-----------+
+ |    100 |       27.4 | * |   0.14966 |   0.05958 |   0.02372 |
+ |    200 |       61.6 | * |   0.16783 |   0.05816 |   0.02016 |
+ |    400 |      136.5 | * |   0.18883 |   0.05697 |   0.01719 |
+ |    800 |      300.2 | * |   0.21370 |   0.05613 |   0.01474 |
+ |   1600 |      648.0 |   |   0.24008 |   0.05489 |   0.01255 |
+ |   3200 |     1416.0 |   |   0.27544 |   0.05483 |   0.01091 |
+ |   6400 |     3041.0 |   |   0.31287 |   0.05422 |   0.00939 |
+ |  12800 |     6567.0 |   |   0.35961 |   0.05425 |   0.00818 |
+ +--------+------------+---+-----------+-----------+-----------+
+ |                         | Underest. | Tight     | Overest.  |
+ +-------------------------+-----------+-----------+-----------+
+
+
+-- Conclusion --
+As clearly seen in the tables, the underestimated and overestimated
+bounds are behaving as expected when dividing t(n), approaching infinity 
+and zero respectively. The result of dividing t(n) over the tight bound 
+also matches the expected theoretical results, approaching these constants:
+
+
+          |  Heap Creation |              Heapsort         
+          |                | ascending | descending | random |
+Ascending |   0.00540 (n)  |  0.00550  |   0.0504   | 0.0542 | (n*log(n))
+
+The algorithm for creating the heap has a time complexity of O(n). This 
+value matches the theoretical time complexity of this procedure.
+
+The heapsort algorithm has a time complexity of O(n*log(n). This can be 
+easily justified because the each of the n-1 calls to percolate_down takes 
+O(log(n)) time.
+
+***************************************************************************
+***************************************************************************
+***************************************************************************

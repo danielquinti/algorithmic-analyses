@@ -1,0 +1,655 @@
+********** Report of Practical 2 **********
+
+
+--   This practical consists of the implementation in C language of two different sorting algorithms that, given an array of lenght n initialized in ascending, descending or random order, orders its elements from the smallest to the biggest one.
+Then, the execution times for each algorithm are measured and analysed, taking into account three different thresholds (1, 10 and 100) for the quicksort algorithm.
+
+These are the given algorithms:
+
+Insertion sort
+-----------------------
+procedure Insertion sort (var v[1..n])
+    for i := 2 to n do
+      x := v[i] ;
+      j := i-1 ;
+      while j > 0 y v[j] > x do
+        v[j+1] := v[j] ;
+        j := j-1
+      end while ;
+      v[j+1] := x
+    end for
+end procedure
+
+Quicksort
+-----------------------
+procedure Median3 (V[i..j])
+   k := (i + j) div 2 ;     /* precondition: i < j */
+   if V[k] > V[j] then swap (V[k], V[j]) ;
+   end if
+   if V[k] > V[i] then swap (V[k], V[i]) ;
+   end if
+   if V[i] > V[j] then swap (V[i], V[j]) ;
+   end if
+end procedure
+
+
+procedure SortAux (V[left..right])
+    if left+THRESHOLD <= right then      /* THRESHOLD >= 1 */
+       Median3 (V[left..right]) ;        /* the pivot is in ’left’, and in ’right’ there will be */
+                                         /* a value greater or equal to the pivot */
+       pivot := V[left] ;
+       i := left ;
+       j := right ;
+       repeat
+         repeat i := i + 1 ; until V[i] >= pivot ;
+         repeat j := j - 1 ; until V[j] <= pivot ;
+         swap (V[i], V[j]);
+       until j <= i ;
+       swap (V[i], V[j]) ;                /* the last swap is undone */
+       swap (V[left], V[j]) ;
+       SortAux (V[left..j-1]);
+       SortAux (V[j+1..right])
+    end if
+end procedure
+
+
+procedure QuickSort (V[1..n])
+    SortAux(V[1..n]);
+    if (THRESHOLD > 1) then
+      Insertion Sort (V[1..n])
+    end if
+end procedure
+
+
+-- The computer used for the measurements has the following specifications:
+    - Model: Lenovo ideapad 100s 14ibr
+    - OS: Ubuntu Mate 18.04
+    - Processor: Intel Celeron CPU N3060 @1.60GHz x2
+    - Memory: 4 GB of DDR3L RAM
+
+--   In order to facilitate the choice of a stable table, we run the measurement five times for each algorithm and display all the results.
+
+--   The execution times are measured in microseconds (t(n)).
+
+
+*************************************************************** SORTING ALGORITHMS ******************************************************************************
+
+
+**** Implementation ****
+
+*Done by passing from pseudocode to C
+
+**** Obtained results ****
+
+
+
+---Checking Insort---
+
+Random initialization
+-9, -6, -1, 9, -2, 0, 0, -1, 5, 0 
+sorted? 0
+
+Insort
+-9, -6, -2, -1, -1, 0, 0, 0, 5, 9 
+sorted? 1
+
+Ascending initialization
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9 
+sorted? 1
+
+Insort
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9 
+sorted? 1
+
+Descending initialization
+10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+sorted? 0
+
+Insort
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10 
+sorted? 1
+
+
+---Checking Quicksort---
+
+Random initialization
+-9, -6, -1, 9, -2, 0, 0, -1, 5, 0
+sorted? 0
+
+Quicksort
+-9, -6, -2, -1, -1, 0, 0, 0, 5, 9
+sorted? 1
+
+Ascending initialization
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+sorted? 1
+
+Quicksort
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+sorted? 1
+
+Descending initialization
+10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+sorted? 0
+
+Quicksort
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+sorted? 1
+
+
+*Notes: The times measured with loops are indicated by * and each loop has 1000 iterations.
+----------------------------------------------------------INSORT---------------------------------
+
+-> Table Insort: Random initialization:
+
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        10         2.55200*            0.040446            0.0255200           0.0161020
+   -------------------------------------------------------------------------------------
+       100        31.71800*            0.007967            0.0031718           0.0012627
+   -------------------------------------------------------------------------------------
+      1000      3170.00000             0.012620            0.0031700           0.0007963
+   -------------------------------------------------------------------------------------
+     10000    306470.00000             0.0193369           0.0030647           0.0004857
+   -------------------------------------------------------------------------------------
+    100000  30450088.00000             0.0304501           0.0030450           0.0003045
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                     CONST =(0.0030, 0.0031)
+                                                    ------------------------
+-> The first value for t(n)/f(n) is an anomalous measurement in an otherwise strictly increasing column of values.
+(Probably because the time was measured with a loop).
+
+For the Insort algorithm applied to a random initialization, these bounds are proposed:
+    - f(n) = n^1.8 as the underestimated bound.
+    - g(n) = n^2 as the tight bound.
+    - h(n) = n^2.2 as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to a constant near CONST=(0.0030, 0.0031)
+    - t(n)/h(n) tends to 0
+
+So O(n) = n^2
+                                                                
+-> Table Insort: Descending initialization:
+
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        10         0.70300*            0.0111418           0.0070300           0.0044356
+   -------------------------------------------------------------------------------------
+       100        61.13100*            0.0153554           0.0061131           0.0024337
+   -------------------------------------------------------------------------------------
+      1000      5983.00000             0.0238188           0.0059830           0.0015029
+   -------------------------------------------------------------------------------------
+     10000    600736.00000             0.0379039           0.0060074           0.0009521
+   -------------------------------------------------------------------------------------
+    100000  60423431.00000             0.0604234           0.0060423           0.0006042
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                          CONST=0.0060
+                                                       -------------------
+-> The first value for t(n)/g(n) is an anomalous measurement in an otherwise nearly constant column of values.
+(Probably because the time was measured with a loop).
+
+For the Insort algorithm applied to a descending initialization, these bounds are proposed:
+    - f(n) = n^1.8 as the underestimated bound.
+    - g(n) = n^2 as the tight bound.
+    - h(n) = n^2.2 as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST=0.0060
+    - t(n)/h(n) tends to 0
+
+So O(n) = n^2
+                                                                                    
+                        
+
+-> Table Insort: Ascending initialization:
+
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        10         0.52300*            0.0828899           0.0523000           0.0329991
+   -------------------------------------------------------------------------------------
+       100         3.16600*            0.0795263           0.0316600           0.0126041
+   -------------------------------------------------------------------------------------
+      1000        15.73800*            0.0626541           0.0157380           0.0039532
+   -------------------------------------------------------------------------------------
+     10000       155.23700*            0.0979479           0.0155237           0.0024603
+   -------------------------------------------------------------------------------------
+    100000      1575.00000             0.1575000           0.0157500           0.0015750
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                         CONST = 0.015
+                                                      -------------------
+-> The second and third values for t(n)/f(n) are anomalous measurements in an otherwise strictly increasing column of values.
+-> The first and second values for t(n)/g(n) are anomalous measurements in an otherwise nearly constant column of values.
+(Probably because the time was measured with a loop).
+
+For the Insort algorithm applied to an ascending initialization, these bounds are proposed:
+    - f(n) = n^0.8 as the underestimated bound.
+    - g(n) = n as the tight bound.
+    - h(n) = n^1.2 as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST=0.015
+    - t(n)/h(n) tends to 0
+
+So O(n) = n
+                                                      
+
+                                                      
+                                                      
+                                                      
+                                                      
+                                                
+ ----------------------------------------------------------QUICKSORT---------------------------------                                       
+                                        
+                                        
+                                        
+-> Table Quicksort: Random initialization with THRESHOLD=1:                                    
+                                        
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        500       84.40200*            0.2391159           0.0256081          0.003085528
+   -------------------------------------------------------------------------------------
+       1000      207.86300*            0.3376294           0.0281835          0.002681886
+   -------------------------------------------------------------------------------------
+       2000      414.60700*            0.3900336           0.0253770          0.001907133
+   -------------------------------------------------------------------------------------
+       4000      946.00000             0.5197392           0.0263578          0.001564385
+   -------------------------------------------------------------------------------------
+       8000     1833.00000             0.5922836           0.0234120          0.001097404
+   -------------------------------------------------------------------------------------
+      16000     3883.00000             0.7423327           0.0228714          0.000846671
+   -------------------------------------------------------------------------------------
+      32000     8703.00000             0.9894562           0.0237616          0.000694691
+   -------------------------------------------------------------------------------------
+      64000    17602.00000             1.1954442           0.0223766          0.000516658
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                     CONST=(0.0022, 0.0023)
+                                                    ------------------------
+-> The first four values for t(n)/g(n) could be considered anomalous measurements since they range between two values which are different
+to the final interval.
+(Probably because the time for three of them was measured with a loop).
+
+For the Quicksort algorithm applied to a random initialization, these bounds are proposed:
+    - f(n) = (n^0.65)*log(n) as the underestimated bound.
+    - g(n) = (n^1.009482)*log(n) as the tight bound.
+    - h(n) = (n^1.35)*log(n) as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST=(0.0022, 0.0023)
+    - t(n)/h(n) tends to 0
+
+So O(n) = (n^1.009482)*log(n)
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+-> Table Quicksort: Random initialization with THRESHOLD=10:                                    
+                                        
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        500       73.83600*            0.2091818           0.0224023           0.002699261
+   -------------------------------------------------------------------------------------
+       1000      170.16300*            0.2763937           0.0230718           0.002195473
+   -------------------------------------------------------------------------------------
+       2000      342.48000*            0.3221815           0.0209623           0.001575359
+   -------------------------------------------------------------------------------------
+       4000      735.00000             0.4038143           0.0204789           0.001215457
+   -------------------------------------------------------------------------------------
+       8000     1613.00000             0.5211967           0.0206021           0.000965692
+   -------------------------------------------------------------------------------------
+      16000     3302.00000             0.6312600           0.0194492           0.000719986
+   -------------------------------------------------------------------------------------
+      32000     7260.00000             0.8253995           0.0198218           0.000579508
+   -------------------------------------------------------------------------------------
+      64000    15187.00000             1.0314289           0.0193065           0.000445773
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                         CONST = (0.0019,0.0020)
+                                                       -------------------------
+                                                       
+-> The first two values for t(n)/g(n) could be considered anomalous measurements since they don't belong to the range of the constant.
+(Probably because the time was measured with a loop).
+
+For the Quicksort algorithm applied to a random initialization, these bounds are proposed:
+    - f(n) = (n^0.65)*log(n) as the underestimated bound.
+    - g(n) = (n^1.009482)*log(n) as the tight bound.
+    - h(n) = (n^1.35)*log(n) as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST = (0.0019,0.0020)
+    - t(n)/h(n) tends to 0
+
+So O(n) = (n^1.009482)*log(n)
+                                                       
+                                                       
+        
+        
+-> Table Quicksort: Random initialization with THRESHOLD=100:                                    
+                                        
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        500       140.61400*           0.3983679           0.0426632          0.005140499
+   -------------------------------------------------------------------------------------
+       1000       280.46600*           0.4555576           0.0380275          0.003618622
+   -------------------------------------------------------------------------------------
+       2000       558.00000            0.5249278           0.0341538          0.002566720
+   -------------------------------------------------------------------------------------
+       4000      1206.00000            0.6625851           0.0336021          0.001994342
+   -------------------------------------------------------------------------------------
+       8000      2609.00000            0.8430267           0.0333235          0.001561990
+   -------------------------------------------------------------------------------------
+      16000      5346.00000            1.0220218           0.0314887          0.001165672
+   -------------------------------------------------------------------------------------
+      32000     11710.00000            1.3313262           0.0319716          0.000934716
+   -------------------------------------------------------------------------------------
+      64000     24762.00000            1.6817174           0.0314788          0.000726820
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                         CONST = (0.031,0.032)
+                                                       -----------------------
+                                
+->There are no anomalous measurements.
+For the Quicksort algorithm applied to a random initialization, these bounds are proposed:
+    - f(n) = (n^0.65)*log(n) as the underestimated bound.
+    - g(n) = (n^1.009482)*log(n) as the tight bound.
+    - h(n) = (n^1.35)*log(n) as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST = (0.031,0.032)
+    - t(n)/h(n) tends to 0
+
+So O(n) = (n^1.009482)*log(n)                                
+                                
+    
+    
+    
+-> Table Quicksort: Descending initialization with THRESHOLD=1:                                    
+                                        
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        500        88.36000*           0.6358533           0.0338410           0.0012717
+   -------------------------------------------------------------------------------------
+       1000       192.56500*           0.8815367           0.0338252           0.0008815
+   -------------------------------------------------------------------------------------
+       2000       417.57900*           1.2284529           0.0339838           0.0006142
+   -------------------------------------------------------------------------------------
+       4000       536.00000            1.0218053           0.0203796           0.0002555
+   -------------------------------------------------------------------------------------
+       8000      1124.00000            1.3982894           0.0201066           0.0001748
+   -------------------------------------------------------------------------------------
+      16000      2353.00000            1.9216361           0.0199217           0.0001201
+   -------------------------------------------------------------------------------------
+      32000      4941.00000            2.6626551           0.0199014           0.0000832
+   -------------------------------------------------------------------------------------
+      64000     10302.00000            3.6797290           0.0198289           0.0000575
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                         CONST = (0.0198,0.0205)
+                                                       -------------------------
+        
+-> The first three values for t(n)/f(n) and t(n)/g(n) are anomalous measurements,
+probably caused by the loop that measured the time.
+
+For the Quicksort algorithm applied to a descending initialization, these bounds are proposed:
+    - f(n) = (n^0.75)*log(n) as the underestimated bound.
+    - g(n) = (n^1.00972)*log(n) as the tight bound.
+    - h(n) = (n^1.5)*log(n) as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST = (0.0198,0.0205)
+    - t(n)/h(n) tends to 0
+
+So O(n) = (n^1.00972)*log(n)
+   
+
+   
+
+Quicksort: Descending initialization with THRESHOLD=10
+
+         n            t(n)         t(n)/f(n)                t(n)/g(n)          t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        500       73.08500*            0.1112211            0.0279908          0.0010519
+   -------------------------------------------------------------------------------------
+       1000      153.56500*            0.1250130            0.0269746          0.0007030
+   -------------------------------------------------------------------------------------
+       2000      336.83400*            0.1481761            0.0274126          0.0004955
+   -------------------------------------------------------------------------------------
+       4000      730.22000*            0.1750419            0.0277642          0.0003480
+   -------------------------------------------------------------------------------------
+       8000      807.00000             0.1061529            0.0144360          0.0001255
+   -------------------------------------------------------------------------------------
+      16000     1764.00000             0.1280908            0.0149349          0.0000900
+   -------------------------------------------------------------------------------------
+      32000     3611.00000             0.1454923            0.0145444          0.0000608
+   -------------------------------------------------------------------------------------
+      64000     7681.00000             0.1724912            0.0147841          0.0000429
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                         CONST = (0.0144,0.015)
+                                                       --------------------------    
+-> The first four values for t(n)/g(n) and t(n)/f(n) are anomalous measurements,
+probably caused by the loop that measured the time.
+
+For the Quicksort algorithm applied to a descending initialization, these bounds are proposed:
+    - f(n) = (n^0.75)*log(n) as the underestimated bound.
+    - g(n) = (n^1.00972)*log(n) as the tight bound.
+    - h(n) = (n^1.5)*log(n) as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST = (0.0144,0.015)
+    - t(n)/h(n) tends to 0
+
+So O(n) = (n^1.00972)*log(n)
+   
+    
+-> Table Quicksort: Descending initialization  with THRESHOLD=100:                                    
+                                        
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        500       139.59800*           1.0045706           0.0534646           0.0020091
+   -------------------------------------------------------------------------------------
+       1000       279.69000*           1.2803833           0.0491292           0.0012804
+   -------------------------------------------------------------------------------------
+       2000       634.05500*           1.8652918           0.0516013           0.0009326
+   -------------------------------------------------------------------------------------
+       4000      1241.37300*           2.3664954           0.0471991           0.0005916
+   -------------------------------------------------------------------------------------
+       8000       626.00000            0.7787626           0.0111982           0.0000973
+   -------------------------------------------------------------------------------------
+      16000      1331.00000            1.0869943           0.0112689           0.0000679
+   -------------------------------------------------------------------------------------
+      32000      2778.00000            1.4970362           0.0111893           0.0000468
+   -------------------------------------------------------------------------------------
+      64000      5731.00000            2.0470323           0.0110308           0.0000320
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                         CONST = 0.011
+                                                       -------------------
+                                                       
+-> The first four values for t(n)/g(n) and t(n)/f(n) are anomalous measurements,
+probably caused by the loop that measured the time.
+
+For the Quicksort algorithm applied to a descending initialization, these bounds are proposed:
+    - f(n) = (n^0.75)*log(n) as the underestimated bound.
+    - g(n) = (n^1.00972)*log(n) as the tight bound.
+    - h(n) = (n^1.5)*log(n) as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST = 0.011
+    - t(n)/h(n) tends to 0
+
+So O(n) = (n^1.00972)*log(n)
+                                                       
+                                                       
+                                                       
+-> Table Quicksort: Ascending initialization with THRESHOLD=1:                                    
+                                        
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        500       81.65000*            0.3156170           0.0336923           0.0021877
+   -------------------------------------------------------------------------------------
+       1000      129.20200*            0.2964369           0.0246565           0.0011801
+   -------------------------------------------------------------------------------------
+       2000      244.70800*            0.3366395           0.0218170           0.0007697
+   -------------------------------------------------------------------------------------
+       4000      503.00000             0.4183746           0.0211263           0.0005494
+   -------------------------------------------------------------------------------------
+       8000     1063.00000             0.5383380           0.0211808           0.0004061
+   -------------------------------------------------------------------------------------
+      16000     2205.00000             0.6839838           0.0209683           0.0002963
+   -------------------------------------------------------------------------------------
+      32000     4700.00000             0.8976002           0.0214402           0.0002233
+   -------------------------------------------------------------------------------------
+      64000     9805.00000             1.1580409           0.0215526           0.0001655
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                         CONST = (0.021,0.022)
+                                                       -------------------------    
+-> The second value for t(n)/f(n) and the first two for t(n)/g(n) are anomalous measurements,
+probably caused by the loop that measured the time.
+
+For the Quicksort algorithm applied to an ascending initialization, these bounds are proposed:
+    - f(n) = (n^0.6)*log(n) as the underestimated bound.
+    - g(n) = (n^1.0096)*log(n) as the tight bound.
+    - h(n) = (n^1.4)*log(n) as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST = (0.021,0.022)
+    - t(n)/h(n) tends to 0
+
+So O(n) = (n^1.0096)*log(n)
+
+    
+    
+    
+     
+
+     
+-> Table Quicksort: Ascending initialization with THRESHOLD=10:                                    
+                                        
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        500       35.46800*            0.1371011           0.0146356           0.0009503
+   -------------------------------------------------------------------------------------
+       1000       76.21200*            0.1748584           0.0145441           0.0006961
+   -------------------------------------------------------------------------------------
+       2000      182.72600*            0.2513722           0.0162909           0.0005748
+   -------------------------------------------------------------------------------------
+       4000      380.39900*            0.3164002           0.0159770           0.0004155
+   -------------------------------------------------------------------------------------
+       8000      778.00000             0.3940047           0.0155020           0.0002972
+   -------------------------------------------------------------------------------------
+      16000     1623.00000             0.5034493           0.0154338           0.0002181
+   -------------------------------------------------------------------------------------
+      32000     3409.00000             0.6510466           0.0155510           0.0001620
+   -------------------------------------------------------------------------------------
+      64000     7259.00000             0.8573400           0.0159562           0.0001225
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                         CONST = (0.0154,0.016)
+                                                       ------------------------
+-> The the first four values for t(n)/g(n) are anomalous measurements,
+probably caused by the loop that measured the time.
+
+For the Quicksort algorithm applied to an ascending initialization, these bounds are proposed:
+    - f(n) = (n^0.6)*log(n) as the underestimated bound.
+    - g(n) = (n^1.0096)*log(n) as the tight bound.
+    - h(n) = (n^1.4)*log(n) as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST = (0.0154,0.016)
+    - t(n)/h(n) tends to 0
+
+So O(n) = (n^1.0096)*log(n)        
+                                               
+
+        
+-> Table Quicksort: Ascending initialization with THRESHOLD=100:                                    
+                                        
+         n          t(n)               t(n)/f(n)           t(n)/g(n)           t(n)/h(n)
+   -------------------------------------------------------------------------------------
+        500       134.81200*           0.2051575           0.0516316           0.0019403
+   -------------------------------------------------------------------------------------
+       1000       276.66500*           0.2252254           0.0485979           0.0012665
+   -------------------------------------------------------------------------------------
+       2000       582.99100*           0.2564627           0.0474456           0.0008575
+   -------------------------------------------------------------------------------------
+       4000      1218.82600*           0.2921663           0.0463418           0.0005809
+   -------------------------------------------------------------------------------------
+       8000       620.00000            0.0815549           0.0110908           0.0000964
+   -------------------------------------------------------------------------------------
+      16000      1279.00000            0.0928731           0.0108287           0.0000653
+   -------------------------------------------------------------------------------------
+      32000      2752.00000            0.1108820           0.0110845           0.0000463
+   -------------------------------------------------------------------------------------
+      64000      5699.00000            0.1279817           0.0109692           0.0000318
+   -------------------------------------------------------------------------------------
+                                    underestimated           tight           overestimated
+   -------------------------------------------------------------------------------------
+                                                         CONST = 0.011
+                                                       -------------------
+
+-> The the first four values for t(n)/g(n) and t(n)/f(n) are anomalous measurements,
+probably caused by the loop that measured the time.
+
+For the Quicksort algorithm applied to an ascending initialization, these bounds are proposed:
+    - f(n) = (n^0.6)*log(n) as the underestimated bound.
+    - g(n) = (n^1.0096)*log(n) as the tight bound.
+    - h(n) = (n^1.4)*log(n) as the overestimated bound.
+
+As n approaches infinity:
+    - t(n)/f(n) tends to infinity
+    - t(n)/g(n) tends to CONST = 0.011
+    - t(n)/h(n) tends to 0
+
+So O(n) = (n^1.0096)*log(n)        
+       
+
+*************************************************************** CONCLUSIONS ******************************************************************************
+With the obtained results, we can conclude for the Insort algorithm that the best case is the Ascending initialization (since it is already sorted) and the worst case is the Descending initialization (as the while loop has the higher possible number of iterations). Moreover, both, random and descending initialization, have big O(n^2), since they both enter the loop.
+
+Performing Quicksort with random initialization, we can see that the fastest threshold is 10. This is because Insertion sort is 
+faster than Quicksort for small arrays.
+However, Quicksort with ascending initialization works faster when the threshold is set to 100 because Insertion sort has O(n)
+for ascending inicializations, so the execution will finish faster if Insertion sort does most of the work.
+Descending and ascending initializations are also faster with THRESHOLD=100 because Quicksort orders parts of the array in ascending order,
+so it's faster for the program to process those big parts with Insertion sort than to keep on using Quicksort.
+
+
+Regarding the complexity, the big O doesn't change with the threshold, rather with the initialization. This way, the random initialization
+has the biggest big O, followed by the descending and ascending one, as seen by comparing the execution times of each case with any given
+array size at any given threshold.
+
+Nevertheless, the threshold affects the way the quicksort works, making the program more efective by using the Insertion sort method in certain subarrays that quicksort returns.
+
+The over and underestimated bounds are quite wide, since they need to contemplate the complexity of the THRESHOLD=100 case.
+
+
+(************ Authors: Daniel Quintillán (daniel.quintillan), Emanuele Meroni (emanuele.meroni) and Hilda Romero (h.rvelo) ************)
